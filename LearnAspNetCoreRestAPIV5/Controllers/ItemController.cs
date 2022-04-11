@@ -23,7 +23,7 @@ namespace LearnAspNetCoreRestAPIV5.Controllers
             this.repository = repository;
         }
 
-        //GET / items
+        //GET /api/ item
         [HttpGet]
         public IEnumerable<ItemDto> GetItems()
         {
@@ -31,7 +31,7 @@ namespace LearnAspNetCoreRestAPIV5.Controllers
             return items;
         }
 
-        //Get /items/Id
+        //Get /api/item/Id
         [HttpGet("{Id}")]
         public ActionResult<ItemDto> GetItemById(Guid Id)
         {
@@ -42,5 +42,60 @@ namespace LearnAspNetCoreRestAPIV5.Controllers
             }
             return Ok(item.AsDto());
         }
+
+        //POST /api/item
+        [HttpPost]
+        public ActionResult<ItemDto> CreateItem(CreateItemDto itemDto)
+        {
+            Item item = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+                CreatedDate = DateTimeOffset.UtcNow
+            };
+
+            repository.CreateItem(item);
+            return CreatedAtAction(nameof(GetItemById), new { id = item.Id }, item.AsDto());
+        }
+
+        //Put /item/
+        [HttpPut("{Id}")]
+        public ActionResult UpdateItem(Guid Id, UpdateItemDto itemDto)
+        {
+            var existingItem = repository.GetItemById(Id);
+            if (existingItem is null)
+            {
+                return NotFound();
+            }
+
+            Item updatedItem = existingItem with
+            {
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+
+            };
+
+            repository.UpdateItem(updatedItem); 
+
+            return NoContent();
+        }
+
+        // DELETE /api/item/{Id}
+        [HttpDelete("Id")]
+        public ActionResult DeleteItemByItemId(Guid Id)
+        {
+            var exisitingItem = repository.GetItemById(Id);
+            
+            if (exisitingItem is null)
+            {
+                return NotFound();
+            }
+
+            repository.DeleteItem(Id);
+
+            return NoContent();
+        }
+
     }
 }

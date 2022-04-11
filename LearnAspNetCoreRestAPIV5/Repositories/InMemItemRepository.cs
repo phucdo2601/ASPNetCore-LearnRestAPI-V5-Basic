@@ -41,5 +41,22 @@ namespace LearnAspNetCoreRestAPIV5.Repositories
         {
             return items.Where(item => item.Id == Id).SingleOrDefault();
         }
+
+        public void CreateItem(Item item)
+        {
+            items.Add(item);
+        }
+
+        public void UpdateItem(Item item)
+        {
+            var index = items.FindIndex(existingItem => existingItem.Id == item.Id);
+            items[index] = item; 
+        }
+
+        public void DeleteItem(Guid Id)
+        {
+            var index = items.FindIndex(existingItem => existingItem.Id == Id);
+            items.RemoveAt(index);
+        }
     }
 }
