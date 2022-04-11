@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace LearnAspNetCoreRestAPIV5.Repositories
 {
-    public class InMemItemRepository
+    public class InMemItemRepository : IItemRepository
     {
         private readonly List<Item> items = new()
         {
             new Item
             {
                 Id = System.Guid.NewGuid(),
-                Name = "Potato", 
+                Name = "Potato",
                 Price = 10,
                 CreatedDate = DateTimeOffset.UtcNow
             },
